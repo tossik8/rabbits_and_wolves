@@ -86,9 +86,9 @@ class Animal(pygame.sprite.Sprite):
             self.kill()
             area[self.y][self.x][self.key] = None
             return
-        self.move()
-        self.eat()
-        self.reproduce()
+        if not self.reproduce():
+            self.move()
+            self.eat()
 
     def move(self):
         directions = []
@@ -139,7 +139,7 @@ class Animal(pygame.sprite.Sprite):
             self.food += grass
             grass_sprite.grass -= grass
 
-    def reproduce(self) -> None:
+    def reproduce(self) -> bool:
         if (
             self.kind == AnimalKind.WOLF
             and (
@@ -154,7 +154,7 @@ class Animal(pygame.sprite.Sprite):
                 or random.random() < RABBIT_RERPODUCTION_PROB
             )
         ):
-            return
+            return False
         directions = []
         for direction in [
             (-1, 0),
@@ -173,13 +173,14 @@ class Animal(pygame.sprite.Sprite):
             if self.kind == AnimalKind.WOLF and (cell["rabbit"] or cell["wolf"]):
                 continue
             if self.kind == AnimalKind.RABBIT and cell["wolf"]:
-                return
+                return False
             directions.append(direction)
         if not directions:
-            return
+            return False
         dx, dy = random.sample(directions, 1)[0]
         self.food /= 2
         Animal(self.kind, self.x + dx, self.y + dy, self.food, 0, *self.groups())
+        return True
 
 
 class Grass(pygame.sprite.Sprite):
