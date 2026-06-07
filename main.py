@@ -53,16 +53,18 @@ class Animal(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.kind = kind
         if kind == AnimalKind.WOLF:
-            self.image = pygame.image.load("assets/wolf-head.png").convert_alpha()
+            self.image = pygame.image.load("assets/wolf-head.svg")
             self.key = "wolf"
         elif kind == AnimalKind.RABBIT:
-            self.image = pygame.image.load("assets/rabbit-head.png").convert_alpha()
+            self.image = pygame.image.load("assets/rabbit-head.svg")
             self.key = "rabbit"
+        self.image = pygame.transform.scale(
+            self.image, (CELL[0] * 0.8, CELL[1] * 0.8)
+        ).convert_alpha()
         self.age = age
         self.food = food
-        image_size = self.image.get_size()
         self.rect = self.image.get_rect().move(
-            x * CELL[0] + image_size[0] / 4, y * CELL[1] + image_size[1] / 4
+            x * CELL[0] + CELL[0] * 0.1, y * CELL[1] + CELL[1] * 0.1
         )
         self.x = x
         self.y = y
